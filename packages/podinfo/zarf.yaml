@@ -2,7 +2,7 @@ kind: ZarfPackageConfig
 metadata:
   name: podinfo
   description: Deploy podinfo using a Helm OCI chart
-  version: 6.3.5
+  version: 6.7.1
   architecture: 'arm64'
 
 components:
@@ -10,11 +10,11 @@ components:
     required: true
     charts:
       - name: podinfo
-        version: 6.3.5
+        version: 6.7.1
         namespace: podinfo
         url: oci://ghcr.io/stefanprodan/charts/podinfo
     images:
-      - "ghcr.io/stefanprodan/podinfo:6.3.4"
+      - "ghcr.io/stefanprodan/podinfo:6.7.1"
     manifests:
       - name: podinfo-config
         namespace: podinfo
