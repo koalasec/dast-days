@@ -124,9 +124,33 @@ Apparently not detaching the docker run for the `dind` image doesn't fully let d
 
 To avoid having to run a `-d` detached image you can just sleep the dind container run and then you wont have to `docker kill <image-id>` the detached container and `docker rmi <your-image>`
 
-```docker run --privileged -it --rm --name ephem-dind ephemeral-dast:latest sleep 30 && /bin/sh 
+```docker run --privileged -it --rm --name ephem-dind ephemeral-dast:latest sleep 30 && /bin/sh  ```
 
 </details>
 
+# Security Pipeline 
+
+## Complete Security Pipeline on your local computer
+the objective of this task is to give you an example of a complete cicd pipeline for security scans that can be run locally
+
+The security pipeline task uses only free and open source tools that do not require you to create an account.
+
+We also output all reports in json format to give you artifacts to play with.
+
+We intentionally omit various other jobs like formatters and linters as we only care about security tests
+
+### Pre-reqs
+You will require the following pre-reqs:
+  - jq
+  - docker
+  - kubectl
+  - a local kubernetes cluster (we've includes example apps in the project)
+  - trivy
+  - opengrep
+  - conftest
+
+### How to
+In order to run the security pipeline locally make sure you have your cluster running and then run:
+```uds run security-pipeline```
 
  

@@ -192,3 +192,46 @@ tasks:
       - task: deploy:deploy-zarf-package
       - task: scan:new-dast-scan
       - task: scan:clean-up
+
+  - name: sca-scan
+    description: "trivy sca and secrets scan of the local directory"
+    actions:
+      - definition: "run trivy fs"
+        cmd: |
+          # run trivy and output as json
+          trivy config . -f json --skip-version-check | jq -r '.Results[]? | select(.Misconfigurations) | .Target as $file | .Misconfigurations[] | "\($file): \(.ID) - \(.Title) [\(.Severity)]"' && sleep 1
+
+  - name: sast-scan
+    description: "opengrep scan of the local directory including SAST and dockerfile scans"
+    actions:
+      - definition: "run opengrep"
+        cmd: |
+          # Output the scan as sarif
+          opengrep scan --sarif-output=sast.json && sleep 1
+          # Make the scan artifact pretty for human eyes
+          jq . sast.json > sast-pretty.json
+
+  - name: infra-scan
+    description: "trivy config scan for terraform k8s, and other things"
+    actions:
+      - definition: "run trivy fs"
+        cmd: |
+          # run trivy and output as json
+          trivy config . -f json --skip-version-check | jq -r '.Results[]? | select(.Misconfigurations) | .Target as $file | .Misconfigurations[] | "\($file): \(.ID) - \(.Title) [\(.Severity)]"' && sleep 1
+
+  - name: policy-as-code-scan
+    description: "basic policy as code scan"
+    actions:
+      - definition: "run conftest"
+        cmd: |
+          # run conftest using policies in policy-as-code folder
+          conftest test --policy ./policy-as-code ./policy-as-code/ -o json > policy-results.json && jq -r '.[] | select(.warnings or .failures) | .filename as $file | (.warnings[]?, .failures[]?) | "\($file): \(.msg)"' policy-results.json
+
+  - name: security-pipeline
+    description: "Run a full end-to-end security pipeline"
+    actions:
+      - task: sca-scan
+      - task: sast-scan
+      - task: infra-scan
+      - task: policy-as-code-scan
+      - task: dast-scan-everything

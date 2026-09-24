@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "username": "admin_example",
+      "role": "Administrator",
+      "mfa_enabled": false
+    },
+    {
+      "username": "sandbox_sam",
+      "role": "User",
+      "mfa_enabled": true
+    }
+  ]
+}
